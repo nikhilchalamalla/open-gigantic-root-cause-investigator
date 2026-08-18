@@ -4,6 +4,12 @@ This document serves as the final submission for the Founding AI Engineer positi
 
 ---
 
+## 🚀 Live Submission Links
+* **GitHub Repository**: [nikhilchalamalla/open-gigantic-root-cause-investigator](https://github.com/nikhilchalamalla/open-gigantic-root-cause-investigator)
+* **Live Deployment (Vercel)**: [open-gigantic-investigator-application-r67r6xxkh.vercel.app](https://open-gigantic-investigator-application-r67r6xxkh.vercel.app/)
+
+---
+
 ## 1. What I Built & Why
 
 ### The Product: **Root-Cause Investigator**
