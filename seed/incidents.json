@@ -1,0 +1,38 @@
+[
+  {
+    "exceptionType": "NullPointerException",
+    "language": "Java",
+    "title": "Spring Boot Autowired Service NullPointerException",
+    "fullLog": "java.lang.NullPointerException: Cannot invoke \"com.example.service.UserService.getUserById(Long)\" because \"this.userService\" is null\n\tat com.example.controller.UserController.getUser(UserController.java:24)\n\tat java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\n\tat org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255)\n\tat org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188)",
+    "rootCause": "The UserController failed to inject the UserService dependency because UserController was instantiated manually instead of being managed by the Spring container, or the UserService class is missing a component scanning annotation like @Service.",
+    "fix": "Ensure that the UserController is annotated with @RestController and UserService is annotated with @Service. Avoid manual instantiation (e.g., 'new UserController()') and use Spring's dependency injection mechanisms (@Autowired or constructor-based injection).",
+    "tags": ["Spring Boot", "Dependency Injection", "NPE", "Java"]
+  },
+  {
+    "exceptionType": "TimeoutError",
+    "language": "SQL",
+    "title": "PostgreSQL Connection Pool Exhaustion",
+    "fullLog": "FATAL: remaining connection slots are reserved for non-replication superuser connections\n\tat pool.js:23:17\n\tat process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n\tConnectionError: database connection timeout after 5000ms\n\tat Pool.connect (node_modules/pg/lib/pool.js:45:11)\n\tat Object.query (src/lib/db.ts:18:22)",
+    "rootCause": "The application is opening database connections but failing to release them back to the connection pool (connection leak), or the pool max size is configured too low for the concurrent load.",
+    "fix": "1. Ensure all database clients are wrapped in try...finally blocks to release connections back to the pool:\n```typescript\nconst client = await pool.connect();\ntry {\n  await client.query('...');\n} finally {\n  client.release();\n}\n```\n2. Increase the database pool maximum capacity or set idle timeouts in connection pool configurations.",
+    "tags": ["PostgreSQL", "Database Pool", "Timeout", "Connection Leak"]
+  },
+  {
+    "exceptionType": "Error: Hydration failed",
+    "language": "TypeScript",
+    "title": "Next.js React Hydration Mismatch",
+    "fullLog": "Error: Hydration failed because the initial UI does not match what was rendered on the server.\nWarning: Text content did not match. Server: \"Login\" Client: \"Welcome, User!\"\n\tat div\n\tat main\n\tat Page (src/app/page.tsx:12:10)\n\tat InnerLayout (src/app/layout.tsx:18:14)",
+    "rootCause": "The application rendered dynamic content (such as reading from localStorage, using window width, or checking browser-only auth states) on the client side immediately during the initial render without waiting for the component to mount, causing the server-rendered HTML to differ from the client-rendered virtual DOM.",
+    "fix": "Use a useEffect hook to set a state variable (e.g. `isMounted = true`) and perform client-only rendering only after mounting:\n```typescript\nconst [mounted, setMounted] = useState(false);\nuseEffect(() => {\n  setMounted(true);\n}, []);\nif (!mounted) return null; // or loading spinner\nreturn <div>{window.localStorage.getItem('user')}</div>;\n```",
+    "tags": ["Next.js", "React Hydration", "Server Components", "SSR"]
+  },
+  {
+    "exceptionType": "OperationalError",
+    "language": "Python",
+    "title": "SQLAlchemy Timeout / Connection Closed",
+    "fullLog": "sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) connection to server at \"localhost\" (127.0.0.1), port 5432 failed: Connection refused\n\tIs the server running on that host and accepting TCP/IP connections?\nDuring handling of the above exception, another exception occurred:\n\tat sqlalchemy.engine.base.Engine.connect (engine/base.py:3268)\n\tat app.py:14:5",
+    "rootCause": "The database server is not running, or is running on a different port, or firewall configurations/pg_hba.conf are rejecting TCP/IP connections from the application host.",
+    "fix": "1. Verify that the PostgreSQL database service is running locally (`Get-Service postgresql*` on Windows or `systemctl status postgresql` on Linux).\n2. Verify the host, port, database name, and credentials inside the database connection string.",
+    "tags": ["Python", "SQLAlchemy", "Database", "Connection Refused"]
+  }
+]
